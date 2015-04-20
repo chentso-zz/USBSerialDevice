@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import android.util.Log;
 
 /**
  * Created by tso on 16/04/15.
@@ -193,6 +192,14 @@ public class USBSerialDevice {
     }
 
 
+    /** Callback to call when USB permission is verified
+     *  This function needs to be overidden
+     */
+    public void onUsbPermitted(){
+        return;
+    }
+
+
     /** Broadcast receiver to handle USB attach/detach + USB Permission events
      *
      */
@@ -210,7 +217,9 @@ public class USBSerialDevice {
             if (ACTION_USB_PERMISSION.equals(action)) {
                 synchronized (this) {
                     if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
-                        if (myDeviceList.get(usbEnum).getVendorId() == vid){
+                        if (!myDeviceList.isEmpty() && myDeviceList.get(usbEnum).getVendorId() == vid){
+
+                            onUsbPermitted();
 
                             // Get a list of usb serial drivers
                             List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(mUsbManager);

@@ -21,9 +21,9 @@ import java.util.Queue;
 
 
 public class ArduinoSensor extends USBSerialDevice {
-    private short accel_x;
-    private short accel_y;
-    private short accel_z;
+    private short accel_x = 0;
+    private short accel_y = 0;
+    private short accel_z = 0;
     private char decimator = 0;
     private Queue<Byte> buf = new LinkedList();
     private static final int CHUNKSIZE = 14;
@@ -38,6 +38,7 @@ public class ArduinoSensor extends USBSerialDevice {
     public ArduinoSensor(Context c, int vid, int baud, int updateRate) {
         super(c, vid, baud, updateRate);
     }
+
 
 
     /**
@@ -64,6 +65,19 @@ public class ArduinoSensor extends USBSerialDevice {
         bf.clear();
     }
 
+
+
+    public int get_accel_x(){
+        return this.accel_x;
+    }
+
+    public int get_accel_y(){
+        return this.accel_y;
+    }
+
+    public int get_accel_z(){
+        return this.accel_z;
+    }
 
 
     /**

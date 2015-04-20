@@ -23,3 +23,5 @@ An example subclass ArduinoSensor is included.
     	arduino.setFileNameUsingTimestamp("ARDUINO");
     	arduino.setRecord(true);
     	arduino.start();
+    	
+5. The USBSerialDevice constructor (as seen above) takes in Context, Vendor ID (integer), Baud Rate (integer), Polling rate (integer).
