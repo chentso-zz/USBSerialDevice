@@ -18,8 +18,8 @@ An example subclass ArduinoSensor is included.
 
 4. Using the ArduinoSensor (with external accelerometers) example and performing purely file writing of the incoming serial bytes, the usage is: 
 
-    arduino = new ArduinoSensor(this, 1027, 19200, 10);
-    arduino.setDirectory("/sdcard/mydirectory/");
-    arduino.setFileNameUsingTimestamp("ARDUINO");
-    arduino.setRecord(true);
-    arduino.start();
+    	arduino = new ArduinoSensor(this, 1027, 19200, 10);
+    	arduino.setDirectory("/sdcard/mydirectory/");
+    	arduino.setFileNameUsingTimestamp("ARDUINO");
+    	arduino.setRecord(true);
+    	arduino.start();
