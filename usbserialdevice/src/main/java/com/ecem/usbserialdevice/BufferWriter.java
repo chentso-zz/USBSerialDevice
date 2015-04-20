@@ -101,7 +101,7 @@ public class BufferWriter {
      */
     public void write(byte buffer[], int byteCount) {
         // Ensure record flag is set to true and the fileoutputstream isn't null
-        if (record && (fout != null)) {
+        if (record && (fout != null) && (byteCount != 0)) {
             // Write out the file
             try {
                 fout.write(buffer, 0, byteCount);

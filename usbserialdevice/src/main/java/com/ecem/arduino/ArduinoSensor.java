@@ -1,14 +1,3 @@
-package com.ecem.arduino;
-
-import android.content.Context;
-
-import com.ecem.usbserialdevice.USBSerialDevice;
-
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.LinkedList;
-import java.util.Queue;
-
 /** Example Arduino Sensor using the USBSerialDevice Class
  *
  *  This is an example of reading data from an Arduino in which a total of 14 bytes are read
@@ -20,6 +9,17 @@ import java.util.Queue;
  *      z accel             (short)
  *
  */
+package com.ecem.arduino;
+
+import com.ecem.usbserialdevice.USBSerialDevice;
+
+import android.content.Context;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.LinkedList;
+import java.util.Queue;
+
+
 public class ArduinoSensor extends USBSerialDevice {
     private short accel_x;
     private short accel_y;
@@ -87,10 +87,8 @@ public class ArduinoSensor extends USBSerialDevice {
     protected void processData(byte buffer[], int numBytesRead) {
         int i;
 
-        if (numBytesRead != 0) {
-            // Write the output to a file (superclass checks for record status)
-            write(buffer, numBytesRead);
-        }
+        // Write the output to a file (superclass checks for record status)
+        write(buffer, numBytesRead);
 
         // Serial communication isn't perfect and sometimes gets delayed
         // so that we don't receive the full message until the next read that
