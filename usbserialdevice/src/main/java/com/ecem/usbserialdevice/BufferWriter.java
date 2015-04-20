@@ -1,12 +1,11 @@
 package com.ecem.usbserialdevice;
 
-import android.content.Context;
 import android.text.format.DateFormat;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import android.util.Log;
 
 /**
  * Created by tso on 20/04/15.
@@ -16,31 +15,43 @@ public class BufferWriter {
     private File file;
     private FileOutputStream fout;
     private boolean record = false;
+    private String directory = "/sdcard/";
+
+    /** Set the directory to save the file in
+     *
+     * @param directory
+     */
+    public void setDirectory(String directory){
+        this.directory = directory;
+        File dir = new File(directory);
+
+        // If the directory doesn't exist, make a new directory
+        if (!dir.exists()){
+            dir.mkdir();
+        }
+    }
 
 
-
-
-    /**
-     * Set the filename to save the file to
+    /** Set the filename to save the file to
+     *
      * @param filename
      * @throws IOException
      */
     public void setFile(String filename) {
-        this.filename = filename;
+        this.filename = directory + filename;
         file = new File(this.filename);
+
+        Log.d("part", "setFile: " + this.filename);
     }
-
-
 
 
     /** Set the filename using the timestamp
      *
      */
     public void setFileUsingTimestamp(){
-        this.filename = (DateFormat.format("yyyyMMdd-kkmmss", new java.util.Date()).toString()) + ".bin";
+        setFile((DateFormat.format("yyyyMMdd-kkmmss", new java.util.Date()).toString()) + ".bin");
+
     }
-
-
 
 
     /** Set the filename using the timestamp plus a custom suffix
@@ -48,14 +59,12 @@ public class BufferWriter {
      * @param suffix
      */
     public void setFileUsingTimestamp(String suffix){
-        this.filename = (DateFormat.format("yyyyMMdd-kkmmss", new java.util.Date()).toString()) + "-" + suffix + ".bin";
+        setFile((DateFormat.format("yyyyMMdd-kkmmss", new java.util.Date()).toString()) + "-" + suffix + ".bin");
     }
 
 
-
-
-    /**
-     * Enable file writing
+    /** Enable file writing
+     *
      */
     public void startWrite() {
         // Create a new file if the file doesn't exist
@@ -72,10 +81,8 @@ public class BufferWriter {
 
 
 
-
-
-    /**
-     * Disable file writing
+    /** Disable file writing
+     *
      */
     public void stopWrite() {
         try {
@@ -87,23 +94,29 @@ public class BufferWriter {
     }
 
 
-
-
-
-    /**
-     * Write the buffer to files
+    /** Write the buffer to files
+     *
      * @param buffer
      * @throws IOException
      */
-    public void write(byte buffer[]) {
+    public void write(byte buffer[], int byteCount) {
         // Ensure record flag is set to true and the fileoutputstream isn't null
         if (record && (fout != null)) {
             // Write out the file
             try {
-                fout.write(buffer);
+                fout.write(buffer, 0, byteCount);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+
+    /** Boolean to determine if the client has set a filename
+     *
+     * @return
+     */
+    public boolean hasFileName(){
+        return (this.filename != null);
     }
 }

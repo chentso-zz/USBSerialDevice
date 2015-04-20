@@ -1,6 +1,5 @@
 package com.ecem.usbserialdevice;
 
-
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import android.util.Log;
 
 /**
  * Created by tso on 16/04/15.
@@ -52,6 +52,7 @@ public class USBSerialDevice {
     private static final int USB_ADD_MODE = 1;
     private static final int USB_REMOVE_MODE = 0;
 
+
     // Constructor
     //      vid = VendorId to read from
     //      baud = vaud rate to set to for the serial device
@@ -61,6 +62,7 @@ public class USBSerialDevice {
         set_vid(vid);
         set_updateRate(updateRate);
     }
+
 
     // Start listening and make USB device active as soon as user allows permission
     // USB BroadcastReceiver registration
@@ -73,22 +75,42 @@ public class USBSerialDevice {
         return;
     }
 
+
+    /** Set the vendor id of the usb serial device
+     *
+     * @param vid
+     */
     public void set_vid(int vid){
         this.vid = vid;
         return;
     }
 
+
+    /** Set the baud rate of the usb serial device
+     *
+     * @param brate
+     */
     public void set_baud(int brate){
         this.baudrate = brate;
         return;
     }
 
+
+    /** Set the updateRate of the usb serial device
+     *
+     * @param updateRate
+     */
     public void set_updateRate(int updateRate){
         this.updateRate = updateRate;
         return;
     }
 
-    // Helper function to remove multiple spaces in a string leaving only one space behind
+
+    /** Helper function to remove multiple spaces in a string leaving only one space behind
+     *
+     * @param str
+     * @return
+     */
     protected String removeMultipleSpaces(String str){
         StringBuffer sb = new StringBuffer();
 
@@ -109,10 +131,17 @@ public class USBSerialDevice {
         return sb.toString();
     }
 
-    // This method needs to be overridden or the subclass object won't do anything
+
+    /** The function that processes the buffer stream read back from USB Serial Devices
+     *
+     * NOTE: This method needs to be overridden or the subclass object won't do anything
+     * @param buffer
+     * @param numBytesRead
+     */
     protected void processData(byte buffer[], int numBytesRead){
         return;
     }
+
 
     // Timer task event that will be called
     private TimerTask serialLoopTask = new TimerTask(){
@@ -125,8 +154,8 @@ public class USBSerialDevice {
                 // Read the buffer
                 int numBytesRead = port.read(buffer, 200);
 
-                // Process the data
-                processData(buffer, numBytesRead);
+                // Process the data if buffer isn't empty
+                if (numBytesRead != 0) processData(buffer, numBytesRead);
 
 
             } catch (IOException e) {
@@ -134,6 +163,7 @@ public class USBSerialDevice {
             }
         }
     };
+
 
     // Functions to enumerate and scan for USB devices
     private void scanUSB(int mode, int vid){
@@ -162,7 +192,10 @@ public class USBSerialDevice {
         }
     }
 
-    // Broadcast receiver to handle USB attach/detach + USB Permission events
+
+    /** Broadcast receiver to handle USB attach/detach + USB Permission events
+     *
+     */
     private final BroadcastReceiver usbDevicesReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -222,16 +255,61 @@ public class USBSerialDevice {
         }
     };
 
+
     /** Sets the system to start or stop recording
      *
      * @param status
      */
     public void setRecord(boolean status){
         if (status){
-            bufferWriter.setFileUsingTimestamp("Arduino");
+
+            // If no filename has been set, create a filename based on timestamp
+            if (!bufferWriter.hasFileName()){
+                bufferWriter.setFileUsingTimestamp();
+            }
+
             bufferWriter.startWrite();
         } else {
             bufferWriter.stopWrite();
         }
+    }
+
+
+    /** Write the buffer bytes into the output file
+     *
+     * @param buffer
+     */
+    public void write(byte buffer[], int byteCount){
+        bufferWriter.write(buffer, byteCount);
+    }
+
+    public void setDirectory(String directory){
+        bufferWriter.setDirectory(directory);
+    }
+
+
+    /** Set the filename to write the files out to
+     *
+     * @param filename
+     */
+    public void setFileName(String filename){
+        bufferWriter.setFile(filename);
+    }
+
+
+    /** Set the filename using a timestamp
+     *
+     */
+    public void setFileNameUsingTimeStamp(){
+        bufferWriter.setFileUsingTimestamp();
+    }
+
+
+    /** Set the filename using a timestamp with an added suffix
+     *
+     * @param suffix
+     */
+    public void setFileNameUsingTimestamp(String suffix){
+        bufferWriter.setFileUsingTimestamp(suffix);
     }
 }
