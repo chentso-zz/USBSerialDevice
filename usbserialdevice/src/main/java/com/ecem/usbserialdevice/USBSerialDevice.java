@@ -321,4 +321,16 @@ public class USBSerialDevice {
     public void setFileNameUsingTimestamp(String suffix){
         bufferWriter.setFileUsingTimestamp(suffix);
     }
+
+    public void onPortEstablished(){
+
+    }
+
+    public void send(byte[] buffer, int timeout){
+        try {
+            port.write(buffer, timeout);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
